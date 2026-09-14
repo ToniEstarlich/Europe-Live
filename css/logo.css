@@ -1,0 +1,24 @@
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.brand-symbol {
+    color: var(--eu-yellow);
+    font-size: 22px;
+    line-height: 1;
+
+    text-shadow: 0 0 14px rgba(255, 215, 0, 0.35);
+}
+
+.brand-europe {
+    color: white;
+}
+
+.brand-live {
+    color: var(--eu-yellow);
+}
