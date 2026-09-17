@@ -3,7 +3,7 @@
 ===================================================== */
 
 let currentPlayer = null;
-let playerReady = false;
+
 let playerEndedCallback = null;
 
 
@@ -13,18 +13,26 @@ let playerEndedCallback = null;
 
 function loadYouTubeAPI() {
 
-    if (window.YT && window.YT.Player) {
+    if (
+        window.YT &&
+        window.YT.Player
+    ) {
+
         return;
+
     }
 
-    const existingScript =
+
+    if (
         document.querySelector(
             'script[src="https://www.youtube.com/iframe_api"]'
-        );
+        )
+    ) {
 
-    if (existingScript) {
         return;
+
     }
+
 
     const script =
         document.createElement("script");
@@ -37,13 +45,7 @@ function loadYouTubeAPI() {
 }
 
 
-/* =====================================================
-   YOUTUBE API READY
-===================================================== */
-
 window.onYouTubeIframeAPIReady = () => {
-
-    playerReady = true;
 
     console.log(
         "Europe Live: YouTube Player API ready."
@@ -53,19 +55,24 @@ window.onYouTubeIframeAPIReady = () => {
 
 
 /* =====================================================
-   PLAY PROGRAM
+   PLAY LIVE PROGRAM
 ===================================================== */
 
-function playProgram(program, onEnded) {
+function playProgram(
+    program,
+    onEnded
+) {
 
     const broadcastArea =
         document.querySelector(
             ".broadcast-placeholder"
         );
 
+
     if (!broadcastArea) {
         return;
     }
+
 
     if (
         !program ||
@@ -73,34 +80,85 @@ function playProgram(program, onEnded) {
     ) {
 
         console.warn(
-            "Europe Live: Invalid TV program."
+            "Europe Live: No playable LIVE video."
         );
 
         return;
+
     }
+
 
     playerEndedCallback =
         onEnded || null;
 
 
+    if (currentPlayer) {
+
+        try {
+            currentPlayer.destroy();
+        }
+
+        catch (error) {
+            console.warn(error);
+        }
+
+        currentPlayer = null;
+
+    }
+
+
     broadcastArea.innerHTML = `
+
         <div
             id="youtube-player"
             class="youtube-player">
         </div>
+
     `;
 
 
-    const createPlayer = () => {
+    const info =
+        document.createElement("div");
+
+    info.className =
+        "broadcast-info";
+
+    info.innerHTML = `
+
+        <div class="broadcast-live">
+
+            <span class="live-dot"></span>
+
+            LIVE
+
+        </div>
+
+
+        <div class="broadcast-title">
+
+            ${escapeHtml(program.title)}
+
+        </div>
+
+
+        <div class="broadcast-channel">
+
+            ${escapeHtml(program.channel)}
+
+        </div>
+
+    `;
+
+
+    broadcastArea.appendChild(info);
+
+
+    function createPlayer() {
 
         if (
             !window.YT ||
             !window.YT.Player
         ) {
-
-            console.warn(
-                "Europe Live: YouTube API not ready yet."
-            );
 
             setTimeout(
                 createPlayer,
@@ -108,6 +166,7 @@ function playProgram(program, onEnded) {
             );
 
             return;
+
         }
 
 
@@ -119,14 +178,19 @@ function playProgram(program, onEnded) {
                     videoId:
                         program.videoId,
 
+
                     playerVars: {
 
                         autoplay: 1,
+
                         mute: 1,
+
                         rel: 0,
+
                         playsinline: 1
 
                     },
+
 
                     events: {
 
@@ -137,6 +201,7 @@ function playProgram(program, onEnded) {
 
                             },
 
+
                         onStateChange:
                             event => {
 
@@ -146,9 +211,10 @@ function playProgram(program, onEnded) {
                                 ) {
 
                                     console.log(
-                                        "Europe Live: Program ended:",
+                                        "Europe Live: LIVE ended:",
                                         program.title
                                     );
+
 
                                     if (
                                         typeof playerEndedCallback ===
@@ -163,11 +229,12 @@ function playProgram(program, onEnded) {
 
                             },
 
+
                         onError:
                             event => {
 
                                 console.warn(
-                                    "Europe Live: YouTube player error:",
+                                    "Europe Live: YouTube error:",
                                     event.data
                                 );
 
@@ -178,44 +245,12 @@ function playProgram(program, onEnded) {
                 }
             );
 
-    };
+    }
 
 
     createPlayer();
 
-
-    const info =
-        document.createElement(
-            "div"
-        );
-
-    info.className =
-        "broadcast-info";
-
-    info.innerHTML = `
-
-        <div class="broadcast-live">
-            <span class="live-dot"></span>
-            LIVE
-        </div>
-
-        <div class="broadcast-title">
-            ${escapeHtml(program.title)}
-        </div>
-
-        <div class="broadcast-channel">
-            ${escapeHtml(program.channel)}
-        </div>
-
-    `;
-
-    broadcastArea.appendChild(info);
-
 }
 
-
-/* =====================================================
-   INITIALIZE
-===================================================== */
 
 loadYouTubeAPI();

@@ -1,0 +1,8 @@
+{
+    "scripts": {
+        "start": "node api/server.js"
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2"
+    }
+}

@@ -1,15 +1,15 @@
 ﻿/* =====================================================
-   EUROPE LIVE — TV PROGRAMS
+   EUROPE LIVE — CHANNELS
 ===================================================== */
 
-const tvPrograms = [
+const tvChannels = [
 
     {
         id: "parliament",
         title: "European Parliament Live",
         channel: "European Parliament",
+        channelId: "UCvU4p_w08osQsrNi_I4ZtDA",
         category: "EUROPE",
-        videoId: "Cz7WgLEm07M",
         priority: 1
     },
 
@@ -17,8 +17,8 @@ const tvPrograms = [
         id: "commission",
         title: "European Commission Live",
         channel: "European Commission",
+        channelId: "UCMPaviJxybo1RTdzvYcU91A",
         category: "EUROPE",
-        videoId: "EVw8Uy6lA_E",
         priority: 2
     },
 
@@ -26,8 +26,8 @@ const tvPrograms = [
         id: "euronews",
         title: "Euronews Live",
         channel: "Euronews",
+        channelId: "UCSrZ3UV4jOidv8ppoVuvW9Q",
         category: "NEWS",
-        videoId: "Cz7WgLEm07M",
         priority: 3
     },
 
@@ -35,9 +35,107 @@ const tvPrograms = [
         id: "tech",
         title: "European Technology Live",
         channel: "Tech Europe",
+        channelId: "UCRw_6H2yFAjUY5mo3AvJT-A",
         category: "TECH",
-        videoId: "RRIn2JvsA0o",
         priority: 4
     }
 
 ];
+
+
+/* =====================================================
+   EUROPE LIVE — TV PROGRAMMING
+===================================================== */
+
+const tvSchedule = {
+
+    morning: [
+
+        {
+            start: "08:00",
+            programId: "parliament"
+        },
+
+        {
+            start: "10:00",
+            programId: "commission"
+        },
+
+        {
+            start: "12:00",
+            programId: "euronews"
+        }
+
+    ],
+
+
+    afternoon: [
+
+        {
+            start: "14:00",
+            programId: "parliament"
+        },
+
+        {
+            start: "16:00",
+            programId: "tech"
+        },
+
+        {
+            start: "18:00",
+            programId: "euronews"
+        }
+
+    ],
+
+
+    night: [
+
+        {
+            start: "20:00",
+            programId: "euronews"
+        },
+
+        {
+            start: "22:00",
+            programId: "parliament"
+        }
+
+    ]
+
+};
+
+
+/* =====================================================
+   GET ALL SCHEDULED PROGRAMS
+===================================================== */
+
+function getAllScheduleEntries() {
+
+    return [
+
+        ...tvSchedule.morning,
+
+        ...tvSchedule.afternoon,
+
+        ...tvSchedule.night
+
+    ];
+
+}
+
+
+/* =====================================================
+   FIND CHANNEL
+===================================================== */
+
+function getChannelById(id) {
+
+    return tvChannels.find(
+        channel =>
+            channel.id === id
+    );
+
+}
+
+
