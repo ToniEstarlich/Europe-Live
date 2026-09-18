@@ -2,539 +2,344 @@
    EUROPE LIVE — TV ENGINE
 ===================================================== */
 
-let currentTVProgram = null;
-
-let liveChannelCache = [];
-
-
-/* =====================================================
-   GET CURRENT TIME SLOT
-===================================================== */
+let currentProgramId = null;
+let refreshTimer = null;
 
 function getCurrentScheduleEntries() {
-
-    const now =
-        new Date();
+    const now = new Date();
 
     const currentMinutes =
         now.getHours() * 60 +
         now.getMinutes();
 
-
     return getAllScheduleEntries()
         .filter(entry => {
-
-            const [
-                hours,
-                minutes
-            ] =
-                entry.start
-                    .split(":")
-                    .map(Number);
-
+            const [hours, minutes] =
+                entry.start.split(":").map(Number);
 
             const entryMinutes =
-                hours * 60 +
-                minutes;
-
+                hours * 60 + minutes;
 
             return entryMinutes <= currentMinutes;
-
         })
-        .sort(
-            (a, b) => {
+        .sort((a, b) => {
+            const [aHours, aMinutes] =
+                a.start.split(":").map(Number);
 
-                const [
-                    ah,
-                    am
-                ] =
-                    a.start
-                        .split(":")
-                        .map(Number);
+            const [bHours, bMinutes] =
+                b.start.split(":").map(Number);
 
-
-                const [
-                    bh,
-                    bm
-                ] =
-                    b.start
-                        .split(":")
-                        .map(Number);
-
-
-                return (
-                    bh * 60 +
-                    bm
-                ) -
-                (
-                    ah * 60 +
-                    am
-                );
-
-            }
-        );
-
+            return (
+                (bHours * 60 + bMinutes) -
+                (aHours * 60 + aMinutes)
+            );
+        });
 }
-
-
-/* =====================================================
-   GET SCHEDULED PROGRAM
-===================================================== */
 
 function getScheduledProgram() {
+    const entries = getCurrentScheduleEntries();
 
-    const entries =
-        getCurrentScheduleEntries();
-
-
-    if (
-        entries.length === 0
-    ) {
-
+    if (!entries.length) {
         return null;
-
     }
 
+    const entry = entries[0];
 
-    const latestEntry =
-        entries[
-            entries.length - 1
-        ];
-
-
-    return getChannelById(
-        latestEntry.programId
-    );
-
+    return getChannelById(entry.programId);
 }
 
-
-/* =====================================================
-   FIND LIVE VIDEO FOR CHANNEL
-===================================================== */
-
-function getLiveVideoForChannel(
-    channel
-) {
-
-    if (!channel) {
+function getLiveVideoForChannel(channel, liveChannels) {
+    if (!channel || !liveChannels) {
         return null;
     }
 
-
-    return liveChannelCache.find(
+    return liveChannels.find(
         live =>
-            live.channelId ===
-            channel.channelId
+            live.channelId === channel.channelId
     );
-
 }
-
-
-/* =====================================================
-   FIND NEXT AVAILABLE LIVE CHANNEL
-===================================================== */
 
 function findAvailableLiveProgram(
-    preferredProgram
+    preferredProgram,
+    liveChannels
 ) {
+    /*
+       PRIORITY:
+       1 = Parliament
+       2 = Commission
+       3 = Tech
+       99 = Euronews fallback
+    */
+
+    const priorityChannels = tvChannels
+        .filter(channel =>
+            channel.id !== "euronews"
+        )
+        .sort((a, b) =>
+            a.priority - b.priority
+        );
+
+    /*
+       First try the scheduled program,
+       as long as it is one of the
+       priority channels and is actually LIVE.
+    */
 
     if (
-        preferredProgram
+        preferredProgram &&
+        preferredProgram.id !== "euronews"
     ) {
-
         const preferredLive =
             getLiveVideoForChannel(
-                preferredProgram
+                preferredProgram,
+                liveChannels
             );
-
 
         if (preferredLive) {
-
             return {
-
-                ...preferredProgram,
-
-                videoId:
-                    preferredLive.videoId
-
+                program: preferredProgram,
+                videoId: preferredLive.videoId
             };
-
         }
-
     }
 
+    /*
+       If the scheduled priority program
+       is not LIVE, look for another
+       priority channel that is LIVE.
+    */
 
-    const available =
-        tvChannels
-            .filter(
-                channel =>
-                    getLiveVideoForChannel(
-                        channel
-                    )
-            )
-            .sort(
-                (a, b) =>
-                    a.priority -
-                    b.priority
+    for (const channel of priorityChannels) {
+        const live =
+            getLiveVideoForChannel(
+                channel,
+                liveChannels
             );
 
-
-    if (
-        available.length === 0
-    ) {
-
-        return null;
-
+        if (live) {
+            return {
+                program: channel,
+                videoId: live.videoId
+            };
+        }
     }
 
+    /*
+       Euronews is the fallback channel.
+       It is only used when none of the
+       priority channels are LIVE.
+    */
 
-    const selected =
-        available[0];
+    const euronews =
+        getChannelById("euronews");
 
-
-    const liveVideo =
+    const euronewsLive =
         getLiveVideoForChannel(
-            selected
+            euronews,
+            liveChannels
         );
 
+    if (euronewsLive) {
+        return {
+            program: euronews,
+            videoId: euronewsLive.videoId
+        };
+    }
 
-    return {
-
-        ...selected,
-
-        videoId:
-            liveVideo.videoId
-
-    };
-
+    return null;
 }
 
-
-/* =====================================================
-   UPDATE NOW / NEXT UI
-===================================================== */
-
-function updateTVGuide(
-    nowProgram
-) {
-
+function updateTVGuide(nowProgram) {
     const nowTitle =
-        document.querySelector(
-            ".tv-now-title"
-        );
-
+        document.querySelector(".tv-now-title");
 
     const nowChannel =
-        document.querySelector(
-            ".tv-now-channel"
-        );
-
+        document.querySelector(".tv-now-channel");
 
     const nextTitle =
-        document.querySelector(
-            ".tv-next-title"
-        );
-
+        document.querySelector(".tv-next-title");
 
     if (nowTitle) {
-
         nowTitle.textContent =
             nowProgram
                 ? nowProgram.title
-                : "No LIVE program";
-
+                : "Waiting...";
     }
 
-
     if (nowChannel) {
-
         nowChannel.textContent =
             nowProgram
                 ? nowProgram.channel
-                : "Waiting for LIVE";
-
+                : "";
     }
-
 
     const entries =
         getAllScheduleEntries();
 
-
-    const now =
-        new Date();
-
+    const now = new Date();
 
     const currentMinutes =
         now.getHours() * 60 +
         now.getMinutes();
 
-
-    const next =
+    const nextEntry =
         entries
             .map(entry => {
-
-                const [
-                    hours,
-                    minutes
-                ] =
-                    entry.start
-                        .split(":")
-                        .map(Number);
-
+                const [hours, minutes] =
+                    entry.start.split(":").map(Number);
 
                 return {
-
                     ...entry,
-
                     minutes:
-                        hours * 60 +
-                        minutes
-
+                        hours * 60 + minutes
                 };
-
             })
-            .filter(
-                entry =>
-                    entry.minutes >
-                    currentMinutes
+            .filter(entry =>
+                entry.minutes > currentMinutes
             )
-            .sort(
-                (a, b) =>
-                    a.minutes -
-                    b.minutes
+            .sort((a, b) =>
+                a.minutes - b.minutes
             )[0];
 
+    const nextProgram =
+        nextEntry
+            ? getChannelById(
+                nextEntry.programId
+            )
+            : null;
 
     if (nextTitle) {
-
-        const nextProgram =
-            next
-                ? getChannelById(
-                    next.programId
-                )
-                : null;
-
-
         nextTitle.textContent =
             nextProgram
                 ? nextProgram.title
-                : "No upcoming program";
-
+                : "No scheduled program";
     }
-
 }
 
-
-/* =====================================================
-   SHOW WAITING SCREEN
-===================================================== */
-
 function showWaitingScreen() {
-
-    const broadcastArea =
+    const container =
         document.querySelector(
             ".broadcast-placeholder"
         );
 
-
-    if (!broadcastArea) {
+    if (!container) {
         return;
     }
 
-
-    broadcastArea.innerHTML = `
-
-        <div class="tv-waiting">
-
-            <div class="broadcast-live">
-
-                <span class="live-dot"></span>
-
-                LIVE
-
-            </div>
-
-
-            <h2>
-                Europe Live
-            </h2>
-
-
-            <p>
-                Waiting for the next LIVE broadcast...
-            </p>
-
+    container.innerHTML = `
+        <div class="broadcast-info">
+            <span>LIVE</span>
+            <h2>Europe Live</h2>
+            <p>Waiting for the next LIVE broadcast...</p>
         </div>
-
     `;
 
+    updateTVGuide(null);
+
+    currentProgramId = null;
 }
 
+function startCurrentProgram() {
+    getLiveChannels()
+        .then(liveChannels => {
 
-/* =====================================================
-   START CURRENT PROGRAM
-===================================================== */
+            const preferredProgram =
+                getScheduledProgram();
 
-async function startCurrentProgram() {
+            const selected =
+                findAvailableLiveProgram(
+                    preferredProgram,
+                    liveChannels
+                );
 
-    console.log(
-        "Europe Live: Checking YouTube LIVE channels..."
-    );
-
-
-    liveChannelCache =
-        await getLiveChannels();
-
-
-    console.log(
-        "Europe Live: LIVE channels:",
-        liveChannelCache
-    );
-
-
-    const scheduledProgram =
-        getScheduledProgram();
-
-
-    const selectedProgram =
-        findAvailableLiveProgram(
-            scheduledProgram
-        );
-
-
-    if (!selectedProgram) {
-
-        currentTVProgram = null;
-
-        updateTVGuide(
-            null
-        );
-
-        showWaitingScreen();
-
-        return;
-
-    }
-
-
-    currentTVProgram =
-        selectedProgram;
-
-
-    updateTVGuide(
-        selectedProgram
-    );
-
-
-    console.log(
-        "Europe Live NOW:",
-        selectedProgram.title
-    );
-
-
-    playProgram(
-        selectedProgram,
-        () => {
-
-            startCurrentProgram();
-
-        }
-    );
-
-}
-
-
-/* =====================================================
-   REFRESH LIVE STATUS
-===================================================== */
-
-async function refreshTV() {
-
-    const previousProgramId =
-        currentTVProgram
-            ? currentTVProgram.id
-            : null;
-
-
-    liveChannelCache =
-        await getLiveChannels();
-
-
-    const scheduledProgram =
-        getScheduledProgram();
-
-
-    const selectedProgram =
-        findAvailableLiveProgram(
-            scheduledProgram
-        );
-
-
-    if (!selectedProgram) {
-
-        if (
-            currentTVProgram
-        ) {
-
-            return;
-
-        }
-
-
-        showWaitingScreen();
-
-        return;
-
-    }
-
-
-    if (
-        !currentTVProgram ||
-        previousProgramId !==
-            selectedProgram.id
-    ) {
-
-        currentTVProgram =
-            selectedProgram;
-
-
-        updateTVGuide(
-            selectedProgram
-        );
-
-
-        playProgram(
-            selectedProgram,
-            () => {
-
-                startCurrentProgram();
-
+            if (!selected) {
+                showWaitingScreen();
+                return;
             }
-        );
 
-    }
+            const {
+                program,
+                videoId
+            } = selected;
 
+            if (
+                currentProgramId === program.id
+            ) {
+                updateTVGuide(program);
+                return;
+            }
+
+            currentProgramId =
+                program.id;
+
+            updateTVGuide(program);
+
+            playProgram(
+                {
+                    ...program,
+                    videoId
+                },
+                () => {
+                    currentProgramId = null;
+                    startCurrentProgram();
+                }
+            );
+        })
+        .catch(error => {
+            console.error(
+                "Europe Live: TV engine error.",
+                error
+            );
+
+            showWaitingScreen();
+        });
 }
 
+function refreshTV() {
+    getLiveChannels()
+        .then(liveChannels => {
 
-/* =====================================================
-   INITIALIZE TV ENGINE
-===================================================== */
+            const preferredProgram =
+                getScheduledProgram();
+
+            const selected =
+                findAvailableLiveProgram(
+                    preferredProgram,
+                    liveChannels
+                );
+
+            if (!selected) {
+                if (currentProgramId !== null) {
+                    showWaitingScreen();
+                }
+
+                return;
+            }
+
+            const selectedProgram =
+                selected.program;
+
+            if (
+                selectedProgram.id !==
+                currentProgramId
+            ) {
+                startCurrentProgram();
+            }
+        })
+        .catch(error => {
+            console.error(
+                "Europe Live: Refresh error.",
+                error
+            );
+        });
+}
 
 function initTVEngine() {
-
-    console.log(
-        "Europe Live TV Engine started."
-    );
-
-
     startCurrentProgram();
 
-
-    setInterval(
-        refreshTV,
-        60000
-    );
-
+    refreshTimer =
+        setInterval(
+            refreshTV,
+            60000
+        );
 }
