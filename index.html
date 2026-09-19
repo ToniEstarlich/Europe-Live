@@ -14,823 +14,377 @@
 
     <meta
         name="description"
-        content="Europe Live — European voices, live. Discover live news, technology, AI, culture and events from across Europe."
+        content="Europe Live — European voices, live."
     >
 
     <meta
         name="theme-color"
-        content="#003399"
+        content="#050505"
     >
 
-    <link rel="stylesheet" href="css/style.css">
+    <link
+        rel="stylesheet"
+        href="css/style.css"
+    >
 
 </head>
 
 
 <body>
 
+    <main class="tv-screen">
 
-    <!-- =====================================================
-         TOP LIVE BAR
-    ====================================================== -->
+        <div class="video-frame">
 
-    <div class="top-live-bar">
+            <!-- =================================================
+                 YOUTUBE / VIDEO
+            ================================================== -->
 
-        <div class="top-live-inner">
+            <div class="broadcast-placeholder">
 
-            <div class="top-live-left">
+                <div class="broadcast-content">
 
-                <span class="signal-dot"></span>
+                    <div class="play-button">
+                        ▶
+                    </div>
 
-                <span class="top-live-text">
-                    EUROPE LIVE
-                </span>
+                    <span class="broadcast-label">
+                        EUROPE LIVE
+                    </span>
 
-                <span class="top-live-separator">
-                    /
-                </span>
+                    <h1>
+                        Live across Europe.
+                    </h1>
 
-                <span class="top-live-status">
-                    LIVE BROADCAST
-                </span>
+                    <p>
+                        The live broadcast will appear here.
+                    </p>
 
-            </div>
-
-
-            <div class="top-live-right">
-
-                <span>
-                    🇪🇺 EUROPE
-                </span>
-
-                <span>
-                    24 / 7
-                </span>
+                </div>
 
             </div>
 
-        </div>
 
-    </div>
+            <!-- =================================================
+                 DARK VIDEO GRADIENT
+            ================================================== -->
 
-
-
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
-
-    <header class="site-header">
-
-        <div class="header-inner">
+            <div class="video-gradient"></div>
 
 
-            <!-- LOGO -->
+            <!-- =================================================
+                 GLASS NAVBAR
+            ================================================== -->
 
-            <a
-                href="#"
-                class="brand"
-                aria-label="Europe Live home"
-            >
+            <header class="glass-navbar">
 
-                <span class="eu-logo">
+                <a
+                    href="#"
+                    class="live-logo"
+                    aria-label="Europe Live"
+                >
 
-                    <svg
-                        viewBox="0 0 100 100"
-                        aria-hidden="true"
-                    >
-
-                        <circle
-                            cx="50"
-                            cy="50"
-                            r="48"
-                            class="logo-circle"
-                        />
-
-                        <!-- 12 European stars -->
-
-                        <g class="logo-stars">
-
-                            <text x="50" y="17">★</text>
-                            <text x="67" y="22">★</text>
-                            <text x="79" y="33">★</text>
-                            <text x="84" y="50">★</text>
-                            <text x="79" y="67">★</text>
-                            <text x="67" y="79">★</text>
-                            <text x="50" y="84">★</text>
-                            <text x="33" y="79">★</text>
-                            <text x="21" y="67">★</text>
-                            <text x="16" y="50">★</text>
-                            <text x="21" y="33">★</text>
-                            <text x="33" y="22">★</text>
-
-                        </g>
-
-                    </svg>
-
-                </span>
-
-
-                <span class="brand-text">
-
-                    <span class="brand-europe">
+                    <span class="logo-europe">
                         EUROPE
                     </span>
 
-                    <span class="brand-live">
+                    <span class="logo-live">
 
-                        <span class="brand-live-dot"></span>
+                        <span class="logo-live-dot"></span>
 
                         LIVE
 
                     </span>
 
+                </a>
+
+
+                <nav class="main-nav">
+
+                    <a href="#live">
+                        LIVE
+                    </a>
+
+                    <a href="#latest">
+                        LATEST
+                    </a>
+
+                    <a href="#categories">
+                        CATEGORIES
+                    </a>
+
+                    <a href="#about">
+                        ABOUT
+                    </a>
+
+                </nav>
+
+
+                <button class="cast-button" id="castButton" type="button" aria-label="Watch on TV"><span class="cast-icon">⌁</span><span>WATCH ON TV</span></button><div class="navbar-status">
+
+                    <span class="status-dot"></span>
+
+                    LIVE 24/7
+
+                </div>
+
+            </header>
+
+
+            <!-- =================================================
+                 LIVE INDICATOR
+            ================================================== -->
+
+            <div class="live-indicator">
+
+                <span class="live-indicator-dot"></span>
+
+                <strong>
+                    LIVE
+                </strong>
+
+            </div>
+
+
+            <!-- =================================================
+                 LOCATION
+            ================================================== -->
+
+            <div class="location-indicator">
+
+                🇪🇺 EUROPE
+
+            </div>
+
+
+            <!-- =================================================
+                 PROGRAM INFORMATION
+            ================================================== -->
+
+            <div class="program-overlay">
+
+                <span class="program-category">
+                    EUROPE LIVE
                 </span>
 
-            </a>
+                <strong class="program-title">
+                    European Technology Live
+                </strong>
+
+                <span class="program-channel">
+                    Europe Live
+                </span>
+
+            </div>
 
 
+            <!-- =================================================
+                 GLASS CHAT
+            ================================================== -->
 
-            <!-- NAVIGATION -->
+            <aside class="glass-chat">
 
-            <nav
-                class="main-nav"
-                aria-label="Main navigation"
-            >
-
-                <a href="#live">
-                    Live
-                </a>
-
-                <a href="#latest">
-                    Latest
-                </a>
-
-                <a href="#categories">
-                    Categories
-                </a>
-
-                <a href="#about">
-                    About
-                </a>
-
-                <a href="#contact">
-                    Contact
-                </a>
-
-            </nav>
-
-
-        </div>
-
-    </header>
-
-
-
-    <!-- =====================================================
-         MAIN
-    ====================================================== -->
-
-    <main>
-
-
-        <!-- =================================================
-             HERO / LIVE
-        ================================================== -->
-
-        <section
-            id="live"
-            class="hero"
-        >
-
-            <div class="hero-background"></div>
-
-            <div class="hero-grid"></div>
-
-
-            <div class="container hero-container">
-
-
-                <!-- HERO HEADER -->
-
-                <div class="hero-heading">
+                <div class="chat-header">
 
                     <div>
 
-                        <span class="section-label">
-                            EUROPE LIVE
+                        <strong>
+                            LIVE CHAT
+                        </strong>
+
+                        <span>
+                            Europe Live community
                         </span>
-
-                        <h1>
-                            European voices.
-                            <span>Live.</span>
-                        </h1>
-
-                        <p class="hero-subtitle">
-                            News, technology, culture and ideas
-                            from across Europe.
-                        </p>
 
                     </div>
 
+                    <div class="chat-online">
 
-                    <div class="live-indicator">
+                        <span></span>
 
-                        <span class="live-pulse"></span>
+                        ONLINE
 
-                        <div>
+                    </div>
+
+                </div>
+
+
+                <div class="chat-messages">
+
+                    <div class="chat-message">
+
+                        <div class="chat-avatar">
+                            🇪🇸
+                        </div>
+
+                        <div class="chat-message-content">
 
                             <strong>
-                                LIVE NOW
+                                Maria
                             </strong>
 
-                            <small>
-                                Broadcasting
-                            </small>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- LIVE GRID -->
-
-                <div class="live-layout">
-
-
-                    <!-- VIDEO -->
-
-                    <div class="broadcast-wrapper">
-
-                        <div class="broadcast-frame">
-
-
-                            <div class="broadcast-corner top-left"></div>
-                            <div class="broadcast-corner top-right"></div>
-                            <div class="broadcast-corner bottom-left"></div>
-                            <div class="broadcast-corner bottom-right"></div>
-
-
-                            <div class="broadcast-placeholder">
-
-                                <div class="broadcast-content">
-
-                                    <div class="play-button">
-
-                                        <span>
-                                            ▶
-                                        </span>
-
-                                    </div>
-
-
-                                    <span class="broadcast-label">
-                                        LIVE BROADCAST
-                                    </span>
-
-
-                                    <h2>
-                                        YouTube Live
-                                    </h2>
-
-
-                                    <p>
-                                        The live stream will appear here.
-                                    </p>
-
-                                </div>
-
-
-                                <div class="broadcast-scanline"></div>
-
-
-                                <div class="broadcast-watermark">
-                                    EUROPE LIVE
-                                </div>
-
-                            </div>
-
-                        </div>
-
-
-
-                        <!-- VIDEO INFORMATION -->
-
-                        <div class="broadcast-info">
-
-                            <div>
-
-                                <span class="category-tag">
-                                    TECHNOLOGY
-                                </span>
-
-                                <h2>
-                                    European Technology Live
-                                </h2>
-
-                            </div>
-
-
-                            <div class="viewer-count">
-
-                                <span class="viewer-dot"></span>
-
-                                <span>
-                                    LIVE
-                                </span>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-
-
-                    <!-- CHAT -->
-
-                    <aside class="chat-panel">
-
-
-                        <div class="chat-header">
-
-                            <div>
-
-                                <div class="chat-title">
-
-                                    <span class="chat-icon">
-                                        💬
-                                    </span>
-
-                                    LIVE CHAT
-
-                                </div>
-
-                                <span class="chat-subtitle">
-                                    Europe Live community
-                                </span>
-
-                            </div>
-
-
-                            <div class="chat-online">
-
-                                <span></span>
-
-                                ONLINE
-
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="chat-messages">
-
-
-                            <div class="chat-message">
-
-                                <div class="chat-avatar blue">
-                                    🇪🇸
-                                </div>
-
-                                <div>
-
-                                    <span class="chat-user">
-                                        Maria
-                                    </span>
-
-                                    <p>
-                                        Interesting discussion!
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <div class="chat-message">
-
-                                <div class="chat-avatar yellow">
-                                    🇩🇪
-                                </div>
-
-                                <div>
-
-                                    <span class="chat-user">
-                                        Alex
-                                    </span>
-
-                                    <p>
-                                        Hello from Germany 👋
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <div class="chat-message">
-
-                                <div class="chat-avatar blue">
-                                    🇫🇷
-                                </div>
-
-                                <div>
-
-                                    <span class="chat-user">
-                                        Pierre
-                                    </span>
-
-                                    <p>
-                                        Watching from Lyon.
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-
-                            <div class="chat-message">
-
-                                <div class="chat-avatar yellow">
-                                    🇮🇹
-                                </div>
-
-                                <div>
-
-                                    <span class="chat-user">
-                                        Luca
-                                    </span>
-
-                                    <p>
-                                        Great project! 🇪🇺
-                                    </p>
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
-
-
-                        <form class="chat-form">
-
-                            <input
-                                type="text"
-                                placeholder="Join the conversation..."
-                                aria-label="Write a message"
-                                maxlength="250"
-                            >
-
-                            <button
-                                type="submit"
-                                aria-label="Send message"
-                            >
-                                →
-                            </button>
-
-                        </form>
-
-
-                    </aside>
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             CATEGORY BAR
-        ================================================== -->
-
-        <section
-            id="categories"
-            class="category-section"
-        >
-
-            <div class="container">
-
-                <div class="category-list">
-
-                    <a
-                        href="#"
-                        class="category active"
-                    >
-                        ALL
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        NEWS
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        TECHNOLOGY
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        AI
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        WEB DEV
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        SCIENCE
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        CULTURE
-                    </a>
-
-                    <a
-                        href="#"
-                        class="category"
-                    >
-                        EUROPE
-                    </a>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             LATEST
-        ================================================== -->
-
-        <section
-            id="latest"
-            class="latest-section"
-        >
-
-            <div class="container">
-
-
-                <div class="section-heading-simple">
-
-                    <div>
-
-                        <span class="section-label">
-                            DISCOVER
-                        </span>
-
-                        <h2>
-                            Live / Latest
-                        </h2>
-
-                    </div>
-
-
-                    <a
-                        href="#"
-                        class="view-all"
-                    >
-                        View all →
-                    </a>
-
-                </div>
-
-
-
-                <div class="content-grid">
-
-
-                    <!-- CARD 1 -->
-
-                    <article class="content-card">
-
-                        <div class="card-thumbnail tech">
-
-                            <div class="card-glow"></div>
-
-                            <span class="card-live">
-                                ● LIVE
-                            </span>
-
-                            <span class="card-icon">
-                                ⚡
-                            </span>
-
-                        </div>
-
-
-                        <div class="card-content">
-
-                            <span class="card-category">
-                                TECHNOLOGY
-                            </span>
-
-                            <h3>
-                                European Technology Live
-                            </h3>
-
                             <p>
-                                Discover what's happening
-                                across Europe's technology scene.
+                                Interesting discussion!
                             </p>
 
                         </div>
 
-                    </article>
+                    </div>
 
 
+                    <div class="chat-message">
 
-                    <!-- CARD 2 -->
-
-                    <article class="content-card">
-
-                        <div class="card-thumbnail ai">
-
-                            <div class="card-glow"></div>
-
-                            <span class="card-icon">
-                                AI
-                            </span>
-
+                        <div class="chat-avatar">
+                            🇩🇪
                         </div>
 
+                        <div class="chat-message-content">
 
-                        <div class="card-content">
-
-                            <span class="card-category">
-                                ARTIFICIAL INTELLIGENCE
-                            </span>
-
-                            <h3>
-                                AI & Innovation
-                            </h3>
+                            <strong>
+                                Alex
+                            </strong>
 
                             <p>
-                                Live discussions, launches
-                                and events from European AI communities.
+                                Hello from Germany 👋
                             </p>
 
                         </div>
-
-                    </article>
-
-
-
-                    <!-- CARD 3 -->
-
-                    <article class="content-card">
-
-                        <div class="card-thumbnail europe">
-
-                            <div class="card-glow"></div>
-
-                            <span class="card-icon">
-                                🇪🇺
-                            </span>
-
-                        </div>
-
-
-                        <div class="card-content">
-
-                            <span class="card-category">
-                                EUROPE
-                            </span>
-
-                            <h3>
-                                European Voices
-                            </h3>
-
-                            <p>
-                                Creators and organisations
-                                sharing Europe's stories.
-                            </p>
-
-                        </div>
-
-                    </article>
-
-
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             EUROPEAN SIGNAL
-        ================================================== -->
-
-        <section class="signal-section">
-
-            <div class="container">
-
-                <div class="signal-box">
-
-                    <div class="signal-content">
-
-                        <span class="section-label">
-                            EUROPEAN SIGNAL
-                        </span>
-
-                        <h2>
-                            What's happening
-                            <span>across Europe?</span>
-                        </h2>
-
-                        <p>
-                            A live window into European news,
-                            technology, culture and innovation.
-                        </p>
 
                     </div>
 
 
-                    <div class="signal-animation">
+                    <div class="chat-message">
 
-                        <div class="signal-line line-one"></div>
-                        <div class="signal-line line-two"></div>
-                        <div class="signal-line line-three"></div>
+                        <div class="chat-avatar">
+                            🇫🇷
+                        </div>
+
+                        <div class="chat-message-content">
+
+                            <strong>
+                                Pierre
+                            </strong>
+
+                            <p>
+                                Watching from Lyon.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="chat-message">
+
+                        <div class="chat-avatar">
+                            🇮🇹
+                        </div>
+
+                        <div class="chat-message-content">
+
+                            <strong>
+                                Luca
+                            </strong>
+
+                            <p>
+                                Great project! 🇪🇺
+                            </p>
+
+                        </div>
 
                     </div>
 
                 </div>
 
+
+                <form class="chat-form">
+
+                    <input
+                        type="text"
+                        placeholder="Join the conversation..."
+                        aria-label="Write a message"
+                        maxlength="250"
+                    >
+
+                    <button
+                        type="submit"
+                        aria-label="Send message"
+                    >
+                        →
+                    </button>
+
+                </form>
+
+            </aside>
+
+
+            <!-- =================================================
+                 NOW / NEXT
+            ================================================== -->
+
+            <div class="tv-status">
+
+                <div class="tv-now">
+
+                    <span class="tv-label">
+                        NOW
+                    </span>
+
+                    <strong class="tv-now-title">
+                        Waiting...
+                    </strong>
+
+                    <small class="tv-now-channel"></small>
+
+                </div>
+
+
+                <div class="tv-next">
+
+                    <span class="tv-label">
+                        NEXT
+                    </span>
+
+                    <strong class="tv-next-title">
+                        Coming soon
+                    </strong>
+
+                </div>
+
             </div>
 
-        </section>
+
+            <!-- =================================================
+                 BREAKING NEWS
+            ================================================== -->
+
+            <div class="breaking-bar">
+
+                <div class="breaking-label">
+
+                    <span class="breaking-dot"></span>
+
+                    BREAKING
+
+                </div>
 
 
-
-        <!-- =================================================
-             TICKER
-        ================================================== -->
-
-        <div class="ticker">
-
-            <div class="ticker-label">
-
-                <span class="ticker-live-dot"></span>
-
-                NOW
-
-            </div>
-
-
-            <div class="ticker-track">
-
-                <div class="ticker-content">
+                <div class="breaking-content">
 
                     <span>
-                        🔴 European technology event live
+                        European voices are live
                     </span>
 
                     <span>
-                        ⚡ AI innovation across Europe
+                        Technology across Europe
                     </span>
 
                     <span>
-                        🇪🇺 European voices live
+                        News, culture and innovation
                     </span>
 
                     <span>
-                        🚀 New European tech projects
-                    </span>
-
-                    <span>
-                        💻 Web development live
+                        Europe Live — 24/7
                     </span>
 
                 </div>
@@ -838,210 +392,56 @@
             </div>
 
         </div>
-
-
-
-        <!-- =================================================
-             ABOUT
-        ================================================== -->
-
-        <section
-            id="about"
-            class="about-section"
-        >
-
-            <div class="container about-grid">
-
-
-                <div>
-
-                    <span class="section-label">
-                        ABOUT EUROPE LIVE
-                    </span>
-
-                    <h2>
-                        A live window
-                        <span>into Europe.</span>
-                    </h2>
-
-                </div>
-
-
-                <div>
-
-                    <p>
-                        Europe Live brings together live streams,
-                        creators, events and conversations from
-                        across Europe in one place.
-                    </p>
-
-                    <p>
-                        Discover what's happening now,
-                        wherever you are in Europe.
-                    </p>
-
-                </div>
-
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             CONTACT
-        ================================================== -->
-
-        <section
-            id="contact"
-            class="contact-section"
-        >
-
-            <div class="container">
-
-                <span class="section-label">
-                    CONTACT
-                </span>
-
-                <h2>
-                    Want to be
-                    <span>part of Europe Live?</span>
-                </h2>
-
-                <p>
-                    Creators, organisations, companies and
-                    partners can get in touch with us.
-                </p>
-
-            </div>
-
-        </section>
-
 
     </main>
 
 
-
     <!-- =====================================================
-         FOOTER
+         SCRIPTS
     ====================================================== -->
 
-    <footer class="site-footer">
-
-        <div class="container footer-inner">
-
-
-            <div class="footer-brand">
-
-                <div class="footer-logo">
-
-                    <span class="footer-star">
-                        ★
-                    </span>
-
-                    EUROPE LIVE
-
-                </div>
-
-                <p>
-                    European voices, live.
-                </p>
-
-            </div>
-
-
-            <div class="footer-links">
-
-                <a href="#about">
-                    About
-                </a>
-
-                <a href="#contact">
-                    Contact
-                </a>
-
-                <a href="#">
-                    Privacy
-                </a>
-
-                <a href="#">
-                    Cookies
-                </a>
-
-            </div>
-
-
-            <div class="footer-copy">
-
-                © 2026 Europe Live
-
-            </div>
-
-
-        </div>
-
-    </footer>
-
-
-
-    <!-- =====================================================
-         COOKIE CONSENT
-    ====================================================== -->
-
-    <div
-        id="cookie-banner"
-        class="cookie-banner"
-    >
-
-        <div class="cookie-content">
-
-            <div class="cookie-title">
-                🍪 Your privacy matters
-            </div>
-
-            <p>
-                Europe Live uses essential cookies to operate
-                the website. With your permission, analytics
-                cookies help us understand how visitors use
-                the platform.
-            </p>
-
-        </div>
-
-
-        <div class="cookie-actions">
-
-            <button
-                id="cookie-reject"
-                class="cookie-secondary"
-            >
-                Reject
-            </button>
-
-            <button
-                id="cookie-accept"
-                class="cookie-primary"
-            >
-                Accept
-            </button>
-
-        </div>
-
-    </div>
-
-<script src="js/utils.js"></script>
-<script src="js/tv-live.js"></script>
-<script src="js/youtube-live.js"></script>
-<script src="js/youtube-player.js"></script>
-<script src="js/tv-engine.js"></script>
-<script src="js/chat.js"></script>
-<script src="js/categories.js"></script>
-<script src="js/cookies.js"></script>
-<script src="js/main.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/tv-live.js"></script>
+    <script src="js/youtube-live.js"></script>
+    <script src="js/youtube-player.js"></script>
+    <script src="js/tv-engine.js"></script>
+    <script src="js/chat.js"></script>
+    <script src="js/categories.js"></script>
+    <script src="js/cookies.js"></script>
+    <script src="js/main.js"></script>
 
 </body>
 
 </html>
 
+<script>
 
+document.addEventListener("DOMContentLoaded", () => {
+
+    const castButton =
+        document.getElementById("castButton");
+
+    if (!castButton) return;
+
+    castButton.addEventListener("click", () => {
+
+        alert(
+            "WATCH ON TV\n\n" +
+            "AirPlay: use AirPlay from your device.\n" +
+            "Chromecast / Google TV: use Cast from your browser."
+        );
+
+    });
+
+});
+
+</script>
+<script>
+window.__onGCastApiAvailable = function(isAvailable) {
+    if (isAvailable && window.EuropeLiveCast) {
+        window.EuropeLiveCast.initialize();
+    }
+};
+</script>
+
+<script src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
