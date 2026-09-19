@@ -3,6 +3,7 @@
         "start": "node api/server.js"
     },
     "dependencies": {
-        "dotenv": "^17.4.2"
+        "dotenv": "^17.4.2",
+        "ws": "^8.21.3"
     }
 }
