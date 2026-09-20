@@ -4,203 +4,432 @@
 
 function initChat() {
 
-    // Prevent the chat from being initialized twice
-    if (window.__europeLiveChatInitialized) {
+    /*
+       Prevent chat from being initialized twice.
+
+       This is important because main.js may also call
+       initChat().
+    */
+
+    if (window.__EUROPE_LIVE_CHAT_INITIALIZED) {
         return;
     }
 
-    const chatForm = document.querySelector(".chat-form");
-    const chatInput = chatForm
-        ? chatForm.querySelector("input")
-        : null;
-    const chatMessages = document.querySelector(".chat-messages");
+    window.__EUROPE_LIVE_CHAT_INITIALIZED = true;
 
-    if (!chatForm || !chatInput || !chatMessages) {
-        console.warn("Europe LIVE chat: elements not found.");
+    const chatForm =
+        document.querySelector(".chat-form");
+
+    const chatInput =
+        chatForm
+            ? chatForm.querySelector("input")
+            : null;
+
+    const chatMessages =
+        document.querySelector(".chat-messages");
+
+    if (
+        !chatForm ||
+        !chatInput ||
+        !chatMessages
+    ) {
         return;
     }
 
-    window.__europeLiveChatInitialized = true;
+    /*
+       Remove static/demo messages from the HTML.
+    */
 
-    /* =================================================
-       UNIQUE USER FOR THIS PAGE/TAB
-    ================================================= */
+    chatMessages.innerHTML = "";
 
-    const userId =
-        "user-" +
-        (window.crypto && crypto.randomUUID
-            ? crypto.randomUUID()
-            : Math.random().toString(36).slice(2) + Date.now());
+    /*
+       -------------------------------------------------
+       USER ID + NICKNAME
+       -------------------------------------------------
+    */
 
-    const username =
-        "Guest-" +
-        Math.random()
-            .toString(36)
-            .slice(2, 7)
-            .toUpperCase();
-
-    console.log("Europe LIVE chat user:", username, userId);
-
-    /* =================================================
-       MESSAGE DEDUPLICATION
-    ================================================= */
-
-    const receivedMessageIds = new Set();
-
-    /* =================================================
-       WEBSOCKET
-    ================================================= */
-
-    const protocol =
-        window.location.protocol === "https:"
-            ? "wss:"
-            : "ws:";
-
-    const socket =
-        new WebSocket(
-            `${protocol}//${window.location.host}/chat`
+    let userId =
+        sessionStorage.getItem(
+            "europeLiveUserId"
         );
 
-    socket.addEventListener("open", () => {
-        console.log("Europe LIVE chat connected.");
-    });
+    let username =
+        sessionStorage.getItem(
+            "europeLiveUsername"
+        );
 
-    socket.addEventListener("close", () => {
-        console.log("Europe LIVE chat disconnected.");
-    });
+    if (!userId) {
 
-    socket.addEventListener("error", error => {
-        console.error("Europe LIVE chat error:", error);
-    });
+        userId =
+            "user-" +
+            Math.random()
+                .toString(36)
+                .slice(2, 10);
 
-    /* =================================================
-       RECEIVE MESSAGE
-    ================================================= */
+        sessionStorage.setItem(
+            "europeLiveUserId",
+            userId
+        );
+    }
 
-    socket.addEventListener("message", event => {
+    if (!username) {
 
-        let data;
+        const randomCode =
+            Math.random()
+                .toString(36)
+                .substring(2, 7)
+                .toUpperCase();
 
-        try {
-            data = JSON.parse(event.data);
-        } catch {
+        username =
+            `Guest-${randomCode}`;
+
+        sessionStorage.setItem(
+            "europeLiveUsername",
+            username
+        );
+    }
+
+    /*
+       -------------------------------------------------
+       CHAT SERVER
+       -------------------------------------------------
+    */
+
+    let chatUrl =
+        window.EUROPE_LIVE_CHAT_URL;
+
+    if (!chatUrl) {
+
+        const protocol =
+            window.location.protocol === "https:"
+                ? "wss:"
+                : "ws:";
+
+        chatUrl =
+            `${protocol}//${window.location.host}/chat`;
+    }
+
+    let socket = null;
+
+    /*
+       Prevent duplicate messages.
+    */
+
+    const receivedMessageIds =
+        new Set();
+
+    /*
+       -------------------------------------------------
+       CONNECT
+       -------------------------------------------------
+    */
+
+    function connectChat() {
+
+        if (
+            socket &&
+            (
+                socket.readyState ===
+                WebSocket.OPEN ||
+
+                socket.readyState ===
+                WebSocket.CONNECTING
+            )
+        ) {
             return;
         }
 
-        if (data.type !== "chat") {
-            return;
-        }
+        socket =
+            new WebSocket(chatUrl);
 
-        // Ignore the same server message twice
-        if (data.id && receivedMessageIds.has(data.id)) {
-            return;
-        }
+        socket.addEventListener(
+            "open",
+            () => {
 
-        if (data.id) {
-            receivedMessageIds.add(data.id);
-        }
+                console.log(
+                    `Europe LIVE chat connected as ${username}`
+                );
 
-        addChatMessage(data);
-    });
+                /*
+                   Tell the server who we are.
+                */
 
-    /* =================================================
+                socket.send(
+                    JSON.stringify({
+
+                        type: "join",
+
+                        userId,
+
+                        username
+
+                    })
+                );
+            }
+        );
+
+        socket.addEventListener(
+            "message",
+            event => {
+
+                let data;
+
+                try {
+
+                    data =
+                        JSON.parse(
+                            event.data
+                        );
+
+                } catch {
+
+                    return;
+                }
+
+                /*
+                   CHAT MESSAGE
+                */
+
+                if (
+                    data.type === "chat"
+                ) {
+
+                    /*
+                       Ignore duplicate messages.
+                    */
+
+                    if (
+                        data.messageId &&
+                        receivedMessageIds.has(
+                            data.messageId
+                        )
+                    ) {
+                        return;
+                    }
+
+                    if (data.messageId) {
+
+                        receivedMessageIds.add(
+                            data.messageId
+                        );
+                    }
+
+                    addChatMessage(data);
+
+                    return;
+                }
+
+                /*
+                   ONLINE COUNT
+                */
+
+                if (
+                    data.type === "presence"
+                ) {
+
+                    updateOnlineCount(
+                        data.count
+                    );
+
+                    return;
+                }
+
+            }
+        );
+
+        socket.addEventListener(
+            "close",
+            () => {
+
+                console.log(
+                    "Europe LIVE chat disconnected."
+                );
+
+            }
+        );
+
+        socket.addEventListener(
+            "error",
+            error => {
+
+                console.error(
+                    "Europe LIVE chat error:",
+                    error
+                );
+
+            }
+        );
+    }
+
+    /*
+       -------------------------------------------------
        SEND MESSAGE
-    ================================================= */
+       -------------------------------------------------
+    */
 
-    chatForm.addEventListener("submit", event => {
+    chatForm.addEventListener(
+        "submit",
+        event => {
 
-        event.preventDefault();
+            event.preventDefault();
 
-        const text = chatInput.value.trim();
+            const message =
+                chatInput.value.trim();
 
-        if (!text) {
-            return;
+            if (!message) {
+                return;
+            }
+
+            if (
+                !socket ||
+                socket.readyState !==
+                WebSocket.OPEN
+            ) {
+
+                console.warn(
+                    "Europe LIVE chat is offline."
+                );
+
+                return;
+            }
+
+            const messageId =
+                `${userId}-${Date.now()}-${Math.random()
+                    .toString(36)
+                    .slice(2, 6)}`;
+
+            socket.send(
+                JSON.stringify({
+
+                    type: "chat",
+
+                    messageId,
+
+                    userId,
+
+                    username,
+
+                    message
+
+                })
+            );
+
+            chatInput.value = "";
+
         }
+    );
 
-        if (socket.readyState !== WebSocket.OPEN) {
-            console.warn("Europe LIVE chat is not connected.");
-            return;
-        }
-
-        socket.send(JSON.stringify({
-            type: "chat",
-            userId: userId,
-            username: username,
-            message: text.substring(0, 250)
-        }));
-
-        chatInput.value = "";
-        chatInput.focus();
-    });
-
-    /* =================================================
-       DISPLAY MESSAGE
-    ================================================= */
+    /*
+       -------------------------------------------------
+       ADD MESSAGE TO UI
+       -------------------------------------------------
+    */
 
     function addChatMessage(data) {
 
         const messageElement =
             document.createElement("div");
 
-        messageElement.className = "chat-message";
+        messageElement.className =
+            "chat-message";
 
-        if (data.userId === userId) {
-            messageElement.classList.add("own-message");
-        }
+        /*
+           Avatar
+        */
 
         const avatar =
             document.createElement("div");
 
-        avatar.className = "chat-avatar";
+        avatar.className =
+            "chat-avatar blue";
+
         avatar.textContent =
-            data.avatar || "🇪🇺";
+            data.flag || "🇪🇺";
+
+        /*
+           Content
+        */
 
         const content =
             document.createElement("div");
 
-        content.className = "chat-content";
+        const user =
+            document.createElement("span");
 
-        const usernameElement =
-            document.createElement("div");
+        user.className =
+            "chat-user";
 
-        usernameElement.className = "chat-username";
-        usernameElement.textContent =
-            data.username || "Guest";
+        user.textContent =
+            data.username ||
+            "Guest";
 
-        const textElement =
-            document.createElement("div");
+        const text =
+            document.createElement("p");
 
-        textElement.className = "chat-text";
-        textElement.textContent =
-            data.message || "";
+        text.textContent =
+            data.message ||
+            "";
 
-        content.appendChild(usernameElement);
-        content.appendChild(textElement);
+        content.appendChild(
+            user
+        );
 
-        messageElement.appendChild(avatar);
-        messageElement.appendChild(content);
+        content.appendChild(
+            text
+        );
 
-        chatMessages.appendChild(messageElement);
+        messageElement.appendChild(
+            avatar
+        );
+
+        messageElement.appendChild(
+            content
+        );
+
+        chatMessages.appendChild(
+            messageElement
+        );
 
         chatMessages.scrollTop =
             chatMessages.scrollHeight;
     }
+
+    /*
+       -------------------------------------------------
+       ONLINE COUNT
+       -------------------------------------------------
+    */
+
+    function updateOnlineCount(
+        count
+    ) {
+
+        const onlineElement =
+            document.querySelector(
+                ".chat-online"
+            );
+
+        if (!onlineElement) {
+            return;
+        }
+
+        onlineElement.textContent =
+            `${count} ONLINE`;
+    }
+
+    /*
+       Start exactly one connection.
+    */
+
+    connectChat();
 }
+
 
 /* =====================================================
    START CHAT
 ===================================================== */
 
-if (document.readyState === "loading") {
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        initChat,
-        { once: true }
-    );
-
-} else {
-
-    initChat();
-
-}
+document.addEventListener(
+    "DOMContentLoaded",
+    initChat
+);
